@@ -24,7 +24,7 @@ from apps.metrics_exporter.helpers import (
     get_organization_ids_from_db,
     get_response_time_period,
     is_allowed_to_start_metrics_calculation,
-    metrics_update_user_cache,
+    metrics_update_user_cache, get_metric_kavenegar_key,
 )
 from apps.metrics_exporter.metrics_cache_manager import MetricsCacheManager
 from common.custom_celery_tasks import shared_dedicated_queue_retry_task
@@ -241,3 +241,19 @@ def update_metrics_for_user(user_id):
 
     user = User.objects.get(id=user_id)
     metrics_update_user_cache(user)
+
+@shared_dedicated_queue_retry_task(
+    autoretry_for=(Exception,), retry_backoff=True, max_retries=1 if settings.DEBUG else 10
+)
+def update_kavenegar_metric_in_cache(label_values):
+    TWO_HOURS = 7200
+    recalculate_timeout = get_metrics_recalculation_timeout()
+    metrics_cache_timeout = recalculate_timeout + TWO_HOURS
+
+    cache_key = get_metric_kavenegar_key(label_values)
+    try:
+        # Try to increment ket value if it exists in the cache.
+        return cache.incr(cache_key)
+    except ValueError:
+        # If key does not exist, so set it first.
+        cache.set(cache_key, 1, timeout=metrics_cache_timeout)

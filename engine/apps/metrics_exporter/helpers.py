@@ -20,7 +20,7 @@ from apps.metrics_exporter.constants import (
     AlertGroupsResponseTimeMetricsDict,
     AlertGroupsTotalMetricsDict,
     RecalculateMetricsTimer,
-    UserWasNotifiedOfAlertGroupsMetricsDict,
+    UserWasNotifiedOfAlertGroupsMetricsDict, KAVENEGAR_SEND_TOTAL,
 )
 from common.cache import ensure_cache_key_allocates_to_the_same_hash_slot
 
@@ -306,3 +306,11 @@ def metrics_update_user_cache(user):
     )["counter"] += 1
 
     cache.set(metric_user_was_notified_key, metric_user_was_notified, timeout=metrics_cache_timeout)
+
+# This function generates a cache key for Kavenegar metrics by concatenating label values
+# with a specific metric name and ensuring the key is allocated to the same hash slot.
+def get_metric_kavenegar_key(label_values) -> str:
+    labels = ":".join(label_values)
+    return ensure_cache_key_allocates_to_the_same_hash_slot(
+        f"{KAVENEGAR_SEND_TOTAL}:{labels}", KAVENEGAR_SEND_TOTAL
+    )

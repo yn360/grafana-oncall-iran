@@ -13,7 +13,7 @@ from apps.metrics_exporter.constants import (
     AlertGroupsResponseTimeMetricsDict,
     AlertGroupsTotalMetricsDict,
     RecalculateOrgMetricsDict,
-    UserWasNotifiedOfAlertGroupsMetricsDict,
+    UserWasNotifiedOfAlertGroupsMetricsDict, KAVENEGAR_SEND_TOTAL,
 )
 from apps.metrics_exporter.helpers import (
     get_metric_alert_groups_response_time_key,
@@ -38,6 +38,24 @@ RE_USER_WAS_NOTIFIED_OF_ALERT_GROUPS = re.compile(_RE_BASE_PATTERN.format(USER_W
 
 
 # https://github.com/prometheus/client_python#custom-collectors
+
+# This function collects metrics related to Kavenegar.
+# It retrieves cached data using a specific key pattern and populates a CounterMetricFamily object with the retrieved metrics.
+def get_kavenegar_metric():
+    kavenegar_metric = CounterMetricFamily(
+        name=KAVENEGAR_SEND_TOTAL,
+        documentation="Total Number of kavenegar api calls",
+        labels=["module", "status", "receptor"],
+    )
+
+    org_results = cache.get_many(cache.keys(f"{KAVENEGAR_SEND_TOTAL}:*"))
+    for key, value in org_results.items():
+        _, module, status, receptor = key.split(":")
+        kavenegar_metric.add_metric([module, status, receptor], value)
+
+    return kavenegar_metric
+
+
 class ApplicationMetricsCollector:
     def __init__(self):
         self._buckets = (60, 300, 600, 3600, "+Inf")
@@ -62,6 +80,7 @@ class ApplicationMetricsCollector:
         alert_groups_response_time_seconds, missing_org_ids_2 = self._get_response_time_metric(org_ids)
         # user was notified of alert groups metrics: counter
         user_was_notified, missing_org_ids_3 = self._get_user_was_notified_of_alert_groups_metric(org_ids)
+        kavenegar_metric = get_kavenegar_metric()
 
         # This part is used for releasing new metrics to avoid recalculation for every metric.
         # Uncomment with metric name when needed.
@@ -75,6 +94,7 @@ class ApplicationMetricsCollector:
         yield alert_groups_total
         yield alert_groups_response_time_seconds
         yield user_was_notified
+        yield kavenegar_metric
 
     def _get_alert_groups_total_metric(self, org_ids):
         alert_groups_total = GaugeMetricFamily(

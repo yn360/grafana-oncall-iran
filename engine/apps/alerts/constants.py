@@ -22,3 +22,11 @@ class AlertGroupState(str, Enum):
     ACKNOWLEDGED = "acknowledged"
     RESOLVED = "resolved"
     SILENCED = "silenced"
+
+class KavenegarStatus(str, Enum):
+    SUCCESS = "success"
+    ERROR = "error"
+
+class KavenegarModule(str, Enum):
+    CALL = "call"
+    SMS = "sms"

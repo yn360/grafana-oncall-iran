@@ -2,6 +2,7 @@ import datetime
 import typing
 
 from django.conf import settings
+from prometheus_client.metrics_core import CounterMetricFamily
 
 
 class AlertGroupsTotalMetricsDict(typing.TypedDict):
@@ -61,3 +62,5 @@ METRICS_RECALCULATION_CACHE_TIMEOUT_DISPERSE = (0, 3600)  # 1 hour
 
 METRICS_ORGANIZATIONS_IDS = "metrics_organizations_ids"
 METRICS_ORGANIZATIONS_IDS_CACHE_TIMEOUT = 3600  # 1 hour
+
+KAVENEGAR_SEND_TOTAL = "oncall_kavenegar_send_total"

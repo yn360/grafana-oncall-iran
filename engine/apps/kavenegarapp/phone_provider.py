@@ -2,9 +2,11 @@ from kavenegar import *
 
 import typing
 import logging
+from apps.alerts.constants import KavenegarModule, KavenegarStatus
 from apps.base.utils import live_settings
 from apps.base.models import LiveSetting
 from apps.base.utils import live_settings
+from apps.metrics_exporter.tasks import update_kavenegar_metric_in_cache
 from apps.phone_notifications.exceptions import (
     FailedToFinishVerification,
     FailedToMakeCall,
@@ -25,7 +27,7 @@ class KaveNegarPhoneProvider(PhoneProvider):
         self.api = KavenegarAPI(live_settings.KAVENEGAR_API_KEY)
         self.sender = live_settings.KAVENEGAR_SENDER_NUMBER
         self.verification_sms_template = live_settings.KAVENEGAR_VERIFICATION_SMS_TEMPLATE
-        
+
     def make_notification_call(self, number: str, text: str):
         params = {
             "receptor": number,
@@ -37,8 +39,10 @@ class KaveNegarPhoneProvider(PhoneProvider):
         try:
             response = self.api.call_maketts(params)
             logger.info(f"KaveNegarPhoneProvider.make_call: {response}")
+            update_kavenegar_metric_in_cache.apply_async(([KavenegarModule.CALL.value, KavenegarStatus.SUCCESS.value, number],))
         except Exception as e:
             logger.error(f"KaveNegarPhoneProvider.make_call: failed {e}")
+            update_kavenegar_metric_in_cache.apply_async(([KavenegarModule.CALL.value, KavenegarStatus.ERROR.value, number],))
             raise FailedToMakeCall
 
     def send_notification_sms(self, number: str, message: str):
@@ -49,9 +53,10 @@ class KaveNegarPhoneProvider(PhoneProvider):
         try:
             response = self.api.sms_send(params)
             logger.info(f"KaveNegarPhoneProvider.make_call: {response}")
-        
+            update_kavenegar_metric_in_cache.apply_async(([KavenegarModule.SMS.value, KavenegarStatus.SUCCESS.value, number],))
         except Exception as e:
             logger.error(f"KaveNegarPhoneProvider.send_sms: failed {e}")
+            update_kavenegar_metric_in_cache.apply_async(([KavenegarModule.SMS.value, KavenegarStatus.ERROR.value, number],))
             raise FailedToSendSMS
 
     def send_verification_sms(self, number: str):
@@ -70,9 +75,10 @@ class KaveNegarPhoneProvider(PhoneProvider):
         try:
             response = self.api.verify_lookup(params)
             logger.info(f"KaveNegarPhoneProvider.send_verification_sms: {response}")
-            
+            update_kavenegar_metric_in_cache.apply_async(([KavenegarModule.SMS.value, KavenegarStatus.SUCCESS.value, number],))
         except Exception as e:
             logger.error(f"KaveNegarPhoneProvider.send_verification_sms: failed {e}")
+            update_kavenegar_metric_in_cache.apply_async(([KavenegarModule.SMS.value, KavenegarStatus.ERROR.value, number],))
             raise FailedToStartVerification
     
 
