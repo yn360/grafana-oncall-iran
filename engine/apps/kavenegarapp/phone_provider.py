@@ -29,7 +29,7 @@ class KaveNegarPhoneProvider(PhoneProvider):
         self.sender = live_settings.KAVENEGAR_SENDER_NUMBER
         self.verification_sms_template = live_settings.KAVENEGAR_VERIFICATION_SMS_TEMPLATE
 
-    def make_notification_call(self, number: str, text: str, alert_group:AlertGroup):
+    def make_notification_call(self, number: str, text: str, alert_group_id: str):
         params = {
             "receptor": number,
             "message": text,

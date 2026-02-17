@@ -99,7 +99,7 @@ class PhoneBackend:
             raise CallsLimitExceeded
         elif calls_left < 3:
             message = self._add_call_limit_warning(calls_left, message)
-        return self.phone_provider.make_notification_call(user.verified_phone_number, message, alert_group)
+        return self.phone_provider.make_notification_call(user.verified_phone_number, message, alert_group.public_primary_key)
 
     def _notify_by_cloud_call(self, user, message):
         """
