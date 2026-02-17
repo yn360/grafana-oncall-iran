@@ -75,6 +75,8 @@ class LiveSetting(models.Model):
         "KAVENEGAR_API_KEY",
         "KAVENEGAR_SENDER_NUMBER",
         "KAVENEGAR_VERIFICATION_SMS_TEMPLATE",
+        "ONCALL_PAGER_SERVER_URL",
+        "ONCALL_PAGER_TIMEOUT_SECONDS"
     )
 
     DESCRIPTIONS = {
@@ -177,6 +179,8 @@ class LiveSetting(models.Model):
         "KAVENEGAR_API_KEY": "your kavenegar accounts api key",
         "KAVENEGAR_SENDER_NUMBER": "your kavenegar dedicated number",
         "KAVENEGAR_VERIFICATION_SMS_TEMPLATE": "Template that you defined for verification with sms.(it shoud be in this format: *%token*)",
+        "ONCALL_PAGER_SERVER_URL": "The url of the oncall pager.",
+        "ONCALL_PAGER_TIMEOUT_SECONDS": "Timeout of oncall pager."
         }
 
     SECRET_SETTING_NAMES = (

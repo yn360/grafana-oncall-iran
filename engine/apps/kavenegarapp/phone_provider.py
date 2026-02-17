@@ -16,6 +16,7 @@ from apps.phone_notifications.exceptions import (
 from apps.phone_notifications.phone_provider import PhoneProvider, ProviderFlags
 from random import randint
 from django.core.cache import cache
+from apps.alerts.models import AlertGroup
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +29,7 @@ class KaveNegarPhoneProvider(PhoneProvider):
         self.sender = live_settings.KAVENEGAR_SENDER_NUMBER
         self.verification_sms_template = live_settings.KAVENEGAR_VERIFICATION_SMS_TEMPLATE
 
-    def make_notification_call(self, number: str, text: str):
+    def make_notification_call(self, number: str, text: str, alert_group:AlertGroup):
         params = {
             "receptor": number,
             "message": text,

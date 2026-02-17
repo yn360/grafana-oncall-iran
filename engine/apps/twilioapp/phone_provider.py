@@ -26,12 +26,13 @@ from apps.twilioapp.models import (
     TwilioVerificationSender,
 )
 from apps.twilioapp.status_callback import get_call_status_callback_url, get_sms_status_callback_url
+from apps.alerts.models import AlertGroup
 
 logger = logging.getLogger(__name__)
 
 
 class TwilioPhoneProvider(PhoneProvider):
-    def make_notification_call(self, number: str, message: str) -> TwilioPhoneCall | None:
+    def make_notification_call(self, number: str, message: str, alert_group: AlertGroup) -> TwilioPhoneCall | None:
         message = self._escape_call_message(message)
 
         twiml_query = self._message_to_twiml(message, with_gather=True)

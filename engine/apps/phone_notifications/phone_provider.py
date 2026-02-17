@@ -9,6 +9,7 @@ from apps.base.utils import live_settings
 from apps.phone_notifications.exceptions import ProviderNotSupports
 from apps.phone_notifications.models import ProviderPhoneCall, ProviderSMS
 
+from apps.alerts.models import AlertGroup
 
 @dataclass
 class ProviderFlags:
@@ -46,7 +47,7 @@ class PhoneProvider(ABC):
         TwilioPhoneProvider as example of complicated phone provider which supports status callbacks and gather actions.
     """
 
-    def make_notification_call(self, number: str, text: str) -> typing.Optional[ProviderPhoneCall]:
+    def make_notification_call(self, number: str, text: str, alert_group: AlertGroup) -> typing.Optional[ProviderPhoneCall]:
         """
         make_notification_call makes a call to notify about alert group and optionally returns unsaved ProviderPhoneCall
         instance. If returned, instance will be linked to PhoneCallRecord and saved by PhoneBackend.
