@@ -1,11 +1,12 @@
 from apps.phone_notifications.phone_provider import PhoneProvider, ProviderFlags
 
+
 class MockPhoneProvider(PhoneProvider):
     """
     MockPhoneProvider exists only for tests, feel free to mock any method to imitate any use-case, exception, etc.
     """
 
-    def make_notification_call(self, number: str, text: str, alert_group: str):
+    def make_notification_call(self, number: str, text: str, alert_group_id: str):
         pass
 
     def send_notification_sms(self, number: str, message: str):

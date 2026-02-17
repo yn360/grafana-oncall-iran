@@ -11,7 +11,6 @@ from apps.phone_notifications.exceptions import FailedToMakeCall, FailedToStartV
 from apps.phone_notifications.phone_provider import PhoneProvider, ProviderFlags
 from apps.zvonok.models.phone_call import ZvonokCallStatuses, ZvonokPhoneCall
 
-from apps.alerts.models import AlertGroup
 
 ZVONOK_CALL_URL = "https://zvonok.com/manager/cabapi_external/api/v1/phones/call/"
 
@@ -23,7 +22,7 @@ class ZvonokPhoneProvider(PhoneProvider):
     ZvonokPhoneProvider is an implementation of phone provider which supports only voice calls (zvonok.com).
     """
 
-    def make_notification_call(self, number: str, message: str, alert_group: AlertGroup) -> ZvonokPhoneCall:
+    def make_notification_call(self, number: str, message: str, alert_group_id: str) -> ZvonokPhoneCall:
         speaker = None
         body = None
 

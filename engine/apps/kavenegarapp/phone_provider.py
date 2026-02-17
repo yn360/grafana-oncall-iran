@@ -16,7 +16,7 @@ from apps.phone_notifications.exceptions import (
 from apps.phone_notifications.phone_provider import PhoneProvider, ProviderFlags
 from random import randint
 from django.core.cache import cache
-from apps.alerts.models import AlertGroup
+
 
 logger = logging.getLogger(__name__)
 
