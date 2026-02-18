@@ -24,7 +24,7 @@ def test_make_notification_call(mock_twiml, mock_call_create):
     number = "+1234567890"
     message = "Hello"
     provider = TwilioPhoneProvider()
-    provider_call = provider.make_notification_call(number, message)
+    provider_call = provider.make_notification_call(number, message, None)
     mock_call_create.assert_called_once_with("mocked_twiml", number, with_callback=True)
     assert provider_call is not None
     assert provider_call.sid == MockTwilioCallInstance.sid
@@ -84,8 +84,8 @@ TEST_CODE = "12345"
         (60200, FailedToMakeCall, True, lambda p: p.make_call(TEST_NUMBER, TEST_MESSAGE), "_call_create"),
         (30808, FailedToMakeCall, False, lambda p: p.make_call(TEST_NUMBER, TEST_MESSAGE), "_call_create"),
         (None, FailedToMakeCall, False, lambda p: p.make_call(TEST_NUMBER, TEST_MESSAGE), "_call_create"),
-        (30410, FailedToMakeCall, True, lambda p: p.make_notification_call(TEST_NUMBER, TEST_MESSAGE), "_call_create"),
-        (30808, FailedToMakeCall, False, lambda p: p.make_notification_call(TEST_NUMBER, TEST_MESSAGE), "_call_create"),
+        (30410, FailedToMakeCall, True, lambda p: p.make_notification_call(TEST_NUMBER, TEST_MESSAGE, None), "_call_create"),
+        (30808, FailedToMakeCall, False, lambda p: p.make_notification_call(TEST_NUMBER, TEST_MESSAGE, None), "_call_create"),
         (None, FailedToMakeCall, False, lambda p: p.make_notification_call(TEST_NUMBER, TEST_MESSAGE), "_call_create"),
         (30004, FailedToSendSMS, True, lambda p: p.send_sms(TEST_NUMBER, TEST_MESSAGE), "_messages_create"),
         (30808, FailedToSendSMS, False, lambda p: p.send_sms(TEST_NUMBER, TEST_MESSAGE), "_messages_create"),

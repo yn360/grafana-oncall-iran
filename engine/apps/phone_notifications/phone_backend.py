@@ -58,7 +58,7 @@ class PhoneBackend:
                 self._notify_by_cloud_call(user, message)
                 record.save()
             else:
-                provider_call = self._notify_by_provider_call(user, message)
+                provider_call = self._notify_by_provider_call(user, message, alert_group)
                 # it is important that record is saved here, so it is possible to execute link_and_save
                 record.save()
                 if provider_call:
@@ -87,7 +87,7 @@ class PhoneBackend:
             log_record.save()
             user_notification_action_triggered_signal.send(sender=PhoneBackend.notify_by_call, log_record=log_record)
 
-    def _notify_by_provider_call(self, user, message) -> Optional[ProviderPhoneCall]:
+    def _notify_by_provider_call(self, user, message, alert_group) -> Optional[ProviderPhoneCall]:
         """
         _notify_by_provider_call makes a notification call using configured phone provider.
         """
@@ -99,7 +99,7 @@ class PhoneBackend:
             raise CallsLimitExceeded
         elif calls_left < 3:
             message = self._add_call_limit_warning(calls_left, message)
-        return self.phone_provider.make_notification_call(user.verified_phone_number, message)
+        return self.phone_provider.make_notification_call(user.verified_phone_number, message, alert_group.public_primary_key)
 
     def _notify_by_cloud_call(self, user, message):
         """

@@ -281,7 +281,8 @@ INSTALLED_APPS = [
     "django_dbconn_retry",
     "apps.phone_notifications",
     "drf_spectacular",
-    "apps.kavenegarapp"
+    "apps.kavenegarapp",
+    "apps.oncallpager"
 ]
 
 REST_FRAMEWORK = {
@@ -828,6 +829,7 @@ DEFAULT_PHONE_PROVIDER = "twilio"
 PHONE_PROVIDERS = {
     "twilio": "apps.twilioapp.phone_provider.TwilioPhoneProvider",
     "kavenegar": "apps.kavenegarapp.phone_provider.KaveNegarPhoneProvider",
+    "oncallpager": "apps.oncallpager.phone_provider.OncallPagerPhoneProvider"
     # "simple": "apps.phone_notifications.simple_phone_provider.SimplePhoneProvider",
     
 }
@@ -855,3 +857,6 @@ ACKNOWLEDGE_REMINDER_TASK_EXPIRY_DAYS = os.environ.get("ACKNOWLEDGE_REMINDER_TAS
 KAVENEGAR_API_KEY=os.environ.get("KAVENEGAR_API_KEY", None)
 KAVENEGAR_SENDER_NUMBER=os.environ.get("KAVENEGAR_SENDER_NUMBER", None)
 KAVENEGAR_VERIFICATION_SMS_TEMPLATE=os.environ.get("KAVENEGAR_VERIFICATION_SMS_TEMPLATE", None)
+
+ONCALL_PAGER_SERVER_URL=os.environ.get("ONCALL_PAGER_SERVER_URL", None)
+ONCALL_PAGER_TIMEOUT_SECONDS=os.environ.get("ONCALL_PAGER_TIMEOUT_SECONDS", 10)

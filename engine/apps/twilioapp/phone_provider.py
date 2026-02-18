@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 
 class TwilioPhoneProvider(PhoneProvider):
-    def make_notification_call(self, number: str, message: str) -> TwilioPhoneCall | None:
+    def make_notification_call(self, number: str, message: str, alert_group_id: str) -> TwilioPhoneCall | None:
         message = self._escape_call_message(message)
 
         twiml_query = self._message_to_twiml(message, with_gather=True)
